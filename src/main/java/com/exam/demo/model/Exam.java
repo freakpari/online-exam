@@ -3,30 +3,17 @@ package com.exam.demo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 @Entity
 @Table(name = "exams")
 public class Exam {
-    public Exam() {}
-
-    public Exam(String title, String description, LocalDate examDate,
-                LocalTime startTime, LocalTime endTime, LocalDateTime publishAt, Long createdBy) {
-        this.title = title;
-        this.description = description;
-        this.examDate = examDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.publishAt = publishAt;
-        this.createdBy = createdBy;
-        this.deleted = false;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank
     @Column(nullable = false)
@@ -49,12 +36,13 @@ public class Exam {
     @Column(nullable = false)
     private boolean deleted = false;
 
-    @NotNull
-    @Column(nullable = false)
-    private Long createdBy;
-
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_instance_id", nullable = false)
+    private CourseInstance courseInstance;
 
     @PrePersist
     protected void onCreate() {
@@ -66,11 +54,11 @@ public class Exam {
         updatedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -114,6 +102,14 @@ public class Exam {
         this.endTime = endTime;
     }
 
+    public CourseInstance getCourseInstance() {
+        return courseInstance;
+    }
+
+    public void setCourseInstance(CourseInstance courseInstance) {
+        this.courseInstance = courseInstance;
+    }
+
     public LocalDateTime getPublishAt() {
         return publishAt;
     }
@@ -128,14 +124,6 @@ public class Exam {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public Long getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
     }
 
     public LocalDateTime getCreatedAt() {
