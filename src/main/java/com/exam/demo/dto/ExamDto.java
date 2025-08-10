@@ -1,23 +1,25 @@
 package com.exam.demo.dto;
+import com.exam.demo.model.CourseInstance;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ExamDto {
-    private Long id;
+    private int id;
     private String title;
     private String description;
     private LocalDate examDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDateTime publishAt;
-    private Long courseId;
+    private int courseInstanceId;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -65,15 +67,16 @@ public class ExamDto {
         return publishAt;
     }
 
+    public int getCourseInstanceId() {
+        return courseInstanceId;
+    }
+
+    public void setCourseInstanceId(int courseInstanceId) {
+        this.courseInstanceId = courseInstanceId;
+    }
+
     public void setPublishAt(LocalDateTime publishAt) {
         this.publishAt = publishAt;
     }
 
-    public Long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
-    }
 }
