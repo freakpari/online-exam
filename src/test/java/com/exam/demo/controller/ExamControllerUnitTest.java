@@ -1,7 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.dto.ExamDto;
-import com.exam.demo.service.ExamService;
+import com.exam.demo.service.ExamServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class ExamControllerUnitTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
-    private ExamService examService;
+    private ExamServiceImpl examService;
 
     @InjectMocks
     private ExamController examController;
@@ -80,15 +80,17 @@ class ExamControllerUnitTest {
         updatedDto.setTitle("Updated Exam");
         updatedDto.setDescription("Updated Description");
 
-        when(examService.updateExamByTitle(anyString(), any(ExamDto.class)))
+        when(examService.updateExamById(anyInt(), any(ExamDto.class)))
                 .thenReturn(updatedDto);
 
-        mockMvc.perform(put("/api/exams/Midterm Exam")
+        mockMvc.perform(put("/api/exams/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Updated Exam"));
+                .andExpect(jsonPath("$.title").value("Updated Exam"))
+                .andExpect(jsonPath("$.description").value("Updated Description"));
     }
+
 
     @Test
     void deleteExam_ShouldReturnNoContent() throws Exception {
