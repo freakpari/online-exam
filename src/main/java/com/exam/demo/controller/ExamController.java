@@ -1,31 +1,33 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.dto.ExamDto;
-import com.exam.demo.service.ExamService;
+import com.exam.demo.service.ExamServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/exams")
 public class ExamController {
 
-    private final ExamService examService;
+    private final ExamServiceImpl examService;
 
-    public ExamController(ExamService examService) {
+    public ExamController(ExamServiceImpl examService) {
         this.examService = examService;
     }
 
     @PostMapping
-    public ResponseEntity<ExamDto> createExam(@RequestBody ExamDto examDto) {
+    public ResponseEntity<ExamDto> createExam(@Valid @RequestBody ExamDto examDto) {
         ExamDto savedExam = examService.createExam(examDto, examDto.getCourseInstanceId());
         return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{title}")
-    public ResponseEntity<ExamDto> updateExam(@PathVariable String title, @RequestBody ExamDto examDto) {
-        ExamDto updatedExam = examService.updateExamByTitle(title, examDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<ExamDto> updateExam(@PathVariable int id, @RequestBody ExamDto examDto) {
+        ExamDto updatedExam = examService.updateExamById(id, examDto);
         return ResponseEntity.ok(updatedExam);
     }
 
@@ -42,6 +44,11 @@ public class ExamController {
 
     @GetMapping("/{title}")
     public ResponseEntity<ExamDto> getExamByTitle(@PathVariable String title) {
-        return ResponseEntity.ok(examService.getExamByTitle(title));
+        try {
+            return ResponseEntity.ok(examService.getExamByTitle(title));
+        } catch (RuntimeException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 }
