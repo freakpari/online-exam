@@ -1,7 +1,7 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.dto.ExamDto;
-import com.exam.demo.service.ExamServiceImpl;
+import com.exam.demo.service.ExamService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,11 @@ import java.util.List;
 @RequestMapping("/api/exams")
 public class ExamController {
 
-    private final ExamServiceImpl examService;
+    private final ExamService examService;
 
-    public ExamController(ExamServiceImpl examService) {
+    public ExamController(ExamService examService) {
         this.examService = examService;
     }
-
     @PostMapping
     public ResponseEntity<ExamDto> createExam(@Valid @RequestBody ExamDto examDto) {
         ExamDto savedExam = examService.createExam(examDto, examDto.getCourseInstanceId());
