@@ -1,11 +1,14 @@
 package com.exam.demo.service;
 
+import com.exam.demo.date.JalaliDateConverter;
 import com.exam.demo.dto.ExamDto;
 import com.exam.demo.model.CourseInstance;
 import com.exam.demo.model.Exam;
 import com.exam.demo.repository.CourseInstanceRepository;
 import com.exam.demo.repository.ExamRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,35 +18,44 @@ public class ExamService {
 
     private final ExamRepository examRepository;
     private final CourseInstanceRepository courseInstanceRepository;
+    private final JalaliDateConverter converter = new JalaliDateConverter();
 
     public ExamService(ExamRepository examRepository, CourseInstanceRepository courseInstanceRepository) {
         this.examRepository = examRepository;
         this.courseInstanceRepository = courseInstanceRepository;
+    }
+    public LocalDate parseJalaliToLocalDate(String jalaliDateStr) {
+        String[] parts = jalaliDateStr.split("/");
+        int jy = Integer.parseInt(parts[0]);
+        int jm = Integer.parseInt(parts[1]);
+        int jd = Integer.parseInt(parts[2]);
+        return converter.jalaliToGregorian(jy, jm, jd);
+    }
+    public String convertLocalDateToJalali(LocalDate date) {
+        int[] jalali = converter.gregorianToJalali(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+        return String.format("%04d/%02d/%02d", jalali[0], jalali[1], jalali[2]);
     }
 
     private Exam toEntity(ExamDto dto, int courseInstanceId) {
         Exam exam = new Exam();
         exam.setTitle(dto.getTitle());
         exam.setDescription(dto.getDescription());
-        exam.setExamDate(dto.getExamDate());
+        exam.setExamDate(parseJalaliToLocalDate(dto.getExamDate()));
         exam.setStartTime(dto.getStartTime());
         exam.setEndTime(dto.getEndTime());
         exam.setPublishAt(dto.getPublishAt());
-        exam.setCreatedAt(LocalDateTime.now());
         exam.setDeleted(false);
-
         CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceId)
-                .orElseThrow(() -> new RuntimeException("CourseInstance not found"));
+                .orElseThrow(() -> new RuntimeException("CourseInstance not found with id: " + courseInstanceId));
         exam.setCourseInstance(courseInstance);
         return exam;
     }
-
     private ExamDto toDto(Exam exam) {
         ExamDto dto = new ExamDto();
         dto.setId(exam.getId());
         dto.setTitle(exam.getTitle());
         dto.setDescription(exam.getDescription());
-        dto.setExamDate(exam.getExamDate());
+        dto.setExamDate(convertLocalDateToJalali(exam.getExamDate()));
         dto.setStartTime(exam.getStartTime());
         dto.setEndTime(exam.getEndTime());
         dto.setPublishAt(exam.getPublishAt());
@@ -52,17 +64,24 @@ public class ExamService {
     }
 
     public ExamDto createExam(ExamDto examDto, int courseInstanceId) {
+        LocalDate examDate = parseJalaliToLocalDate(examDto.getExamDate());
+        if (examDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("تاریخ امتحان نمی‌تواند قبل از امروز باشد");
+        }
         Exam exam = toEntity(examDto, courseInstanceId);
         Exam savedExam = examRepository.save(exam);
         return toDto(savedExam);
     }
 
     public ExamDto updateExamByTitle(String title, ExamDto examDto) {
+        LocalDate examDate = parseJalaliToLocalDate(examDto.getExamDate());
+        if (examDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("تاریخ امتحان نمی‌تواند قبل از امروز باشد");
+        }
         Exam existingExam = examRepository.findByTitle(title)
                 .orElseThrow(() -> new RuntimeException("Exam not found with title: " + title));
-
         existingExam.setDescription(examDto.getDescription());
-        existingExam.setExamDate(examDto.getExamDate());
+        existingExam.setExamDate(examDate);
         existingExam.setStartTime(examDto.getStartTime());
         existingExam.setEndTime(examDto.getEndTime());
         existingExam.setPublishAt(examDto.getPublishAt());
@@ -70,21 +89,18 @@ public class ExamService {
         Exam updatedExam = examRepository.save(existingExam);
         return toDto(updatedExam);
     }
-
     public void deleteExamById(Integer id) {
         if (!examRepository.existsById(id)) {
             throw new RuntimeException("Exam not found with id: " + id);
         }
         examRepository.deleteById(id);
     }
-
     public List<ExamDto> getAllExams() {
         return examRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
-
     public ExamDto getExamByTitle(String title) {
         Exam exam = examRepository.findByTitle(title)
                 .orElseThrow(() -> new RuntimeException("Exam not found with title: " + title));
