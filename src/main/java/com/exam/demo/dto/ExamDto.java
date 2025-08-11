@@ -9,7 +9,7 @@ public class ExamDto {
     private int id;
     private String title;
     private String description;
-    private LocalDate examDate;
+    private String examDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDateTime publishAt;
@@ -39,11 +39,11 @@ public class ExamDto {
         this.description = description;
     }
 
-    public LocalDate getExamDate() {
+    public String getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(LocalDate examDate) {
+    public void setExamDate(String examDate) {
         this.examDate = examDate;
     }
 
