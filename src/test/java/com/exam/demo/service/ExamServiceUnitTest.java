@@ -30,7 +30,7 @@ public class ExamServiceUnitTest {
     private CourseInstanceRepository courseInstanceRepository;
 
     @InjectMocks
-    private ExamService examService;
+    private ExamServiceImpl examService;
 
     private ExamDto validExamDto;
     private CourseInstance courseInstance;
@@ -119,10 +119,10 @@ public class ExamServiceUnitTest {
         exitingExam.setExamDate(LocalDate.of(2025,8,13));
         exitingExam.setCourseInstance(courseInstance);
 
-        when(examRepository.findByTitle("ریاضی")).thenReturn(Optional.of(exitingExam));
+        when(examRepository.findById(1)).thenReturn(Optional.of(exitingExam));
         when(examRepository.save(any(Exam.class))).thenReturn(exitingExam);
 
-        ExamDto result = examService.updateExamByTitle("ریاضی", updateDto);
+        ExamDto result = examService.updateExamById(1, updateDto);
 
         assertEquals("ریاضی آپدیت", result.getTitle());
         assertEquals("اپدیت", result.getDescription());
