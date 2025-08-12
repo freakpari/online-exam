@@ -16,12 +16,18 @@ public class ExamController {
     private final ExamService examService;
 
     public ExamController(ExamService examService) {
+
         this.examService = examService;
     }
+
     @PostMapping
-    public ResponseEntity<ExamDto> createExam(@Valid @RequestBody ExamDto examDto) {
-        ExamDto savedExam = examService.createExam(examDto, examDto.getCourseInstanceId());
-        return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
+    public ResponseEntity<?> createExam(@Valid @RequestBody ExamDto examDto) {
+        try {
+            ExamDto savedExam = examService.createExam(examDto, examDto.getCourseInstanceId());
+            return new ResponseEntity<>(savedExam, HttpStatus.CREATED);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
