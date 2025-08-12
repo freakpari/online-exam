@@ -59,9 +59,9 @@ public class Exam {
         updatedAt = LocalDateTime.now();
     }
 
-/*    @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    private List<Questions> questions;*/
+    private List<Questions> questions;
 
 
 }
