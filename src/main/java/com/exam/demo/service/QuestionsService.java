@@ -15,4 +15,12 @@ public interface QuestionsService {
 
     List<QuestionsDto> getQuestionsByExamId(Integer examId);
 
+    List<QuestionsDto> deleteAllQuestionsByExamId(Integer examId);
+
+    void deleteQuestionById(Integer id);
+
+    Questions updateQuestionText(Integer id, String newQuestionText);
+
+    Questions updateMultipleChoiceQuestion(Integer id,MultipleChoiceQuestionDto dto);
+
 }
