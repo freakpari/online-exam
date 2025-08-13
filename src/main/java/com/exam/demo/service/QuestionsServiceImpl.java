@@ -30,8 +30,7 @@ public class QuestionsServiceImpl implements QuestionsService {
         this.examRepository = examRepository;
     }
 
-
-    private QuestionsDto convertToDto(Questions question) {
+    public QuestionsDto convertToDto(Questions question) {
         if (question instanceof MultipleChoiceQuestion mcq) {
             MultipleChoiceQuestionDto dto = new MultipleChoiceQuestionDto();
             dto.setQuestionText(mcq.getQuestionText());
@@ -83,23 +82,6 @@ public class QuestionsServiceImpl implements QuestionsService {
         return questionRepository.save(question);
     }
 
-    public void deleteQuestionById(Integer id) {
-        if (!questionRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");
-        }
-        questionRepository.deleteById(id);
-    }
-
-    public List<QuestionsDto> deleteAllQuestionsByExamId(Integer examID){
-        examRepository.findById(examID)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found with id: " + examID));
-        List<Questions> questions = questionRepository.deleteByExamId(examID);
-        return questions.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-
     public List<QuestionsDto> getQuestionsByExamId(Integer examId) {
         examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found with id: " + examId));
@@ -141,5 +123,19 @@ public class QuestionsServiceImpl implements QuestionsService {
         return questionRepository.save(mcq);
     }
 
+    public void deleteQuestionById(Integer id) {
+        if (!questionRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");
+        }
+        questionRepository.deleteById(id);
+    }
 
+    public List<QuestionsDto> deleteAllQuestionsByExamId(Integer examID){
+        examRepository.findById(examID)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found with id: " + examID));
+        List<Questions> questions = questionRepository.deleteByExamId(examID);
+        return questions.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 }
