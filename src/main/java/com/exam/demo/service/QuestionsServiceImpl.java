@@ -83,6 +83,23 @@ public class QuestionsServiceImpl implements QuestionsService {
         return questionRepository.save(question);
     }
 
+    public void deleteQuestionById(Integer id) {
+        if (!questionRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found");
+        }
+        questionRepository.deleteById(id);
+    }
+
+    public List<QuestionsDto> deleteAllQuestionsByExamId(Integer examID){
+        examRepository.findById(examID)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found with id: " + examID));
+        List<Questions> questions = questionRepository.deleteByExamId(examID);
+        return questions.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
     public List<QuestionsDto> getQuestionsByExamId(Integer examId) {
         examRepository.findById(examId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found with id: " + examId));
@@ -92,4 +109,37 @@ public class QuestionsServiceImpl implements QuestionsService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+    public Questions updateQuestionText(Integer id, String newQuestionText) {
+        Questions question = questionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Question not found with id: " + id));
+
+        question.setQuestionText(newQuestionText);
+        return questionRepository.save(question);
+    }
+
+    public Questions updateMultipleChoiceQuestion(Integer id, MultipleChoiceQuestionDto dto) {
+        Questions question = questionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found with id: " + id));
+
+        if (!(question instanceof MultipleChoiceQuestion mcq)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Question is not multiple choice");
+        }
+
+        if (dto.getOptions() == null || dto.getOptions().size() < 2 || dto.getOptions().size() > 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Options must be between 2 and 6");
+        }
+
+        if (dto.getCorrectOptionIndex() < 1 || dto.getCorrectOptionIndex() > dto.getOptions().size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Correct option index is invalid");
+        }
+
+        mcq.setQuestionText(dto.getQuestionText());
+        mcq.setOptions(dto.getOptions());
+        mcq.setCorrectOptionIndex(dto.getCorrectOptionIndex() - 1);
+
+        return questionRepository.save(mcq);
+    }
+
+
 }
