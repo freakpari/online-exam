@@ -3,7 +3,6 @@ package com.exam.demo.service;
 import com.exam.demo.entity.User;
 
 import com.exam.demo.repo.UserRepository;
-import com.exam.demo.service.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,4 +23,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new CustomUserDetails(user);
     }
+
 }

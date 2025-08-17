@@ -17,4 +17,6 @@ public abstract class QuestionsDto {
 
     @NotNull(message = "آیدی آزمون الزامی است")
     private Integer examId;
+
+    private Double score;
 }

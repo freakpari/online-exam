@@ -1,7 +1,8 @@
 package com.exam.demo.controller;
 
 import com.exam.demo.dto.*;
-import com.exam.demo.model.*;
+import com.exam.demo.model.MultipleChoiceQuestion;
+import com.exam.demo.model.Questions;
 import com.exam.demo.service.QuestionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

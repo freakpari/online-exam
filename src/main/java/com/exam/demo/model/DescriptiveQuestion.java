@@ -8,5 +8,5 @@ import lombok.EqualsAndHashCode;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 
-public class DescriptiveQuestion  extends  Questions{
+public class DescriptiveQuestion  extends Questions {
 }

@@ -4,8 +4,8 @@ import com.exam.demo.date.JalaliDateConverter;
 import com.exam.demo.dto.ExamDto;
 import com.exam.demo.model.CourseInstance;
 import com.exam.demo.model.Exam;
-import com.exam.demo.repository.CourseInstanceRepository;
-import com.exam.demo.repository.ExamRepository;
+import com.exam.demo.repo.CourseInstanceRepository;
+import com.exam.demo.repo.ExamRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

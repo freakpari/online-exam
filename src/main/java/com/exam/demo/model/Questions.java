@@ -3,6 +3,7 @@ package com.exam.demo.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "questions")
+@Table(name = "question")
 public abstract class Questions {
 
     @Id
@@ -21,7 +22,9 @@ public abstract class Questions {
     private String questionText;
 
     @ManyToOne
-    @JoinColumn(name = "exam_id")
     @JsonBackReference
     private Exam exam;
+
+    @Column(nullable = true)
+    private Double score;
 }
