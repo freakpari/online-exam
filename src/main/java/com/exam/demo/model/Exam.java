@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,9 +58,9 @@ public class Exam {
         updatedAt = LocalDateTime.now();
     }
 
-/*    @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    private List<Questions> questions;*/
+    private List<Questions> questions;
 
-
+    private boolean hasCustomScore;
 }

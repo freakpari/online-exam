@@ -1,4 +1,4 @@
-package com.exam.demo.entity;
+package com.exam.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "teacher")
+@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Teacher {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

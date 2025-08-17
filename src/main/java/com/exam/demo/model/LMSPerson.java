@@ -1,27 +1,29 @@
-package com.exam.demo.entity;
+package com.exam.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_role")
+@Table(name = "LMS_person")
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserRole {
+public class LMSPerson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RoleType role; // enum STUDENT, TEACHER
+    private String nameFamily;
 
-    @ManyToOne
+    @Column(length = 11, unique = true)
+    private String phone;
+
+    @Column(length = 10, unique = true)
+    private String nationalCode;
+
+    @OneToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
 }

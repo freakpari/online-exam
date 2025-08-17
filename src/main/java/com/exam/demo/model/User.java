@@ -1,4 +1,4 @@
-package com.exam.demo.entity;
+package com.exam.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +12,11 @@ import java.util.Set;
 @Setter
 @Getter
 public class User {
+    public User() {}
+
+    public User(Integer id) {
+        this.id = id;
+    }
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
