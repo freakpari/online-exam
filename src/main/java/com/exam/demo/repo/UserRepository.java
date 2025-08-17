@@ -1,6 +1,6 @@
 package com.exam.demo.repo;
 
-import com.exam.demo.entity.User;
+import com.exam.demo.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,5 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.User;
 import com.exam.demo.model.*;
 import com.exam.demo.repo.AnswerRepository;
 import com.exam.demo.repo.QuestionsRepository;

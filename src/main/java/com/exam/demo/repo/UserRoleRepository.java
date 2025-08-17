@@ -1,7 +1,7 @@
 package com.exam.demo.repo;
 
-import com.exam.demo.entity.RoleType;
-import com.exam.demo.entity.UserRole;
+import com.exam.demo.model.RoleType;
+import com.exam.demo.model.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

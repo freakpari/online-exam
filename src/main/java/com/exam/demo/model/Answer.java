@@ -1,6 +1,5 @@
 package com.exam.demo.model;
 
-import com.exam.demo.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

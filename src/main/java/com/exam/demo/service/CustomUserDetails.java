@@ -1,7 +1,7 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.User;
-import com.exam.demo.entity.UserRole;
+import com.exam.demo.model.User;
+import com.exam.demo.model.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package com.exam.demo.service;
 
-import com.exam.demo.entity.User;
+import com.exam.demo.model.User;
 
 import com.exam.demo.repo.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
