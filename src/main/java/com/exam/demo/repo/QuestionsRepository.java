@@ -14,5 +14,5 @@ public interface QuestionsRepository extends JpaRepository<Questions, Integer> {
 
     List<Questions> deleteByExamId(Integer examId);
 
-
+    boolean existsByHash(String hash);
 }

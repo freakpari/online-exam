@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,28 @@ public class QuestionsServiceImpl implements QuestionsService {
     public QuestionsServiceImpl(QuestionsRepository questionRepository, ExamRepository examRepository) {
         this.questionRepository = questionRepository;
         this.examRepository = examRepository;
+    }
+
+    private String generateUniqueHash(String questionText, List<String> options, Integer correctOptionIndex) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            String input;
+            if (options != null && !options.isEmpty()) {
+                input = questionText + options.toString() + correctOptionIndex;
+            } else {
+                input = questionText;
+            }
+            byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error generating hash", e);
+        }
     }
 
     public QuestionsDto convertToDto(Questions question) {
@@ -51,16 +76,40 @@ public class QuestionsServiceImpl implements QuestionsService {
     }
 
     @Override
+    public Questions addDescriptiveQuestion(DescriptiveQuestionDto dto) {
+        Exam exam = examRepository.findById(dto.getExamId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
+
+        String hash = generateUniqueHash(dto.getQuestionText(), null, null);
+        boolean exists = questionRepository.existsByHash(hash);
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Question already exists in the bank");
+        }
+
+        DescriptiveQuestion question = new DescriptiveQuestion();
+        question.setExam(exam);
+        question.setQuestionText(dto.getQuestionText());
+        question.setHash(hash);
+
+        return questionRepository.save(question);
+    }
+
+    @Override
     public Questions addMultipleChoiceQuestion(MultipleChoiceQuestionDto dto) {
         Exam exam = examRepository.findById(dto.getExamId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exam not found"));
 
         if (dto.getOptions() == null || dto.getOptions().size() < 2 || dto.getOptions().size() > 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Options must be between 2 and 6");
         }
-
         if (dto.getCorrectOptionIndex() < 1 || dto.getCorrectOptionIndex() > dto.getOptions().size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Correct option index is invalid");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Correct option index is invalid");
+        }
+
+        String hash = generateUniqueHash(dto.getQuestionText(), dto.getOptions(), dto.getCorrectOptionIndex());
+        boolean exists = questionRepository.existsByHash(hash);
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Question already exists in the bank");
         }
 
         MultipleChoiceQuestion question = new MultipleChoiceQuestion();
@@ -68,19 +117,11 @@ public class QuestionsServiceImpl implements QuestionsService {
         question.setQuestionText(dto.getQuestionText());
         question.setOptions(dto.getOptions());
         question.setCorrectOptionIndex(dto.getCorrectOptionIndex() - 1);
+        question.setHash(hash);
+
         return questionRepository.save(question);
     }
 
-    @Override
-    public Questions addDescriptiveQuestion(DescriptiveQuestionDto dto) {
-        Exam exam = examRepository.findById(dto.getExamId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Exam not found"));
-
-        DescriptiveQuestion question = new DescriptiveQuestion();
-        question.setExam(exam);
-        question.setQuestionText(dto.getQuestionText());
-        return questionRepository.save(question);
-    }
 
     public List<QuestionsDto> getQuestionsByExamId(Integer examId) {
         examRepository.findById(examId)

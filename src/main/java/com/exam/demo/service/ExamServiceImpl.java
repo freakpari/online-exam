@@ -7,7 +7,6 @@ import com.exam.demo.model.Exam;
 import com.exam.demo.repo.CourseInstanceRepository;
 import com.exam.demo.repo.ExamRepository;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +31,7 @@ public class ExamServiceImpl implements ExamService{
         int jd = Integer.parseInt(parts[2]);
         return converter.jalaliToGregorian(jy, jm, jd);
     }
+
     public String convertLocalDateToJalali(LocalDate date) {
         int[] jalali = converter.gregorianToJalali(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
         return String.format("%04d/%02d/%02d", jalali[0], jalali[1], jalali[2]);
@@ -54,6 +54,7 @@ public class ExamServiceImpl implements ExamService{
 
         return exam;
     }
+
     private ExamDto toDto(Exam exam) {
         ExamDto dto = new ExamDto();
         dto.setId(exam.getId());
@@ -82,6 +83,7 @@ public class ExamServiceImpl implements ExamService{
         if (examDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("The exam date cannot be before today.");
         }
+
         Exam existingExam = examRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Exam not found with id: " + id));
         existingExam.setTitle(examDto.getTitle());
@@ -108,6 +110,7 @@ public class ExamServiceImpl implements ExamService{
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
     public ExamDto getExamByTitle(String title) {
         Exam exam = examRepository.findByTitle(title)
                 .orElseThrow(() -> new RuntimeException("Exam not found with title: " + title));
