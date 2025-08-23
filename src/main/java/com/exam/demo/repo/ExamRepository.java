@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface ExamRepository extends JpaRepository <Exam, Integer>{
     Optional<Exam> findByTitle(String title);
 
-
 }
 
