@@ -231,7 +231,7 @@ class QuestionsServiceUnitTest {
         assertTrue(dto instanceof MultipleChoiceQuestionDto);
         MultipleChoiceQuestionDto mcqDto = (MultipleChoiceQuestionDto) dto;
         assertEquals("MCQ", mcqDto.getQuestionText());
-        assertEquals(2, mcqDto.getCorrectOptionIndex()); // converted back to 1-based
+        assertEquals(2, mcqDto.getCorrectOptionIndex());
         assertEquals(3, mcqDto.getOptions().size());
     }
 
@@ -246,5 +246,74 @@ class QuestionsServiceUnitTest {
         assertTrue(dto instanceof DescriptiveQuestionDto);
         assertEquals("DQ", dto.getQuestionText());
         assertEquals("descriptive", dto.getType());
+    }
+    @Test
+    void addDescriptiveQuestion_duplicate_shouldThrowConflict() {
+        DescriptiveQuestionDto dto = new DescriptiveQuestionDto();
+        dto.setQuestionText("Duplicate Question?");
+        dto.setExamId(1);
+
+        when(examRepository.findById(1)).thenReturn(Optional.of(new Exam()));
+        when(questionRepository.existsByHash(any())).thenReturn(true);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                questionsService.addDescriptiveQuestion(dto)
+        );
+
+        assertEquals(409, exception.getStatusCode().value());
+        verify(questionRepository, never()).save(any());
+    }
+
+    @Test
+    void addDescriptiveQuestion_examNotFound_shouldThrowNotFound() {
+        DescriptiveQuestionDto dto = new DescriptiveQuestionDto();
+        dto.setQuestionText("Some Question?");
+        dto.setExamId(1);
+
+        when(examRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                questionsService.addDescriptiveQuestion(dto)
+        );
+
+        assertEquals(404, exception.getStatusCode().value());
+        verify(questionRepository, never()).save(any());
+    }
+
+    @Test
+    void addMultipleChoiceQuestion_duplicate_shouldThrowConflict() {
+        MultipleChoiceQuestionDto dto = new MultipleChoiceQuestionDto();
+        dto.setQuestionText("Duplicate MCQ?");
+        dto.setOptions(Arrays.asList("A", "B", "C"));
+        dto.setCorrectOptionIndex(2);
+        dto.setExamId(1);
+
+        when(examRepository.findById(1)).thenReturn(Optional.of(new Exam()));
+        when(questionRepository.existsByHash(any())).thenReturn(true);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                questionsService.addMultipleChoiceQuestion(dto)
+        );
+
+        assertEquals(409, exception.getStatusCode().value());
+        verify(questionRepository, never()).save(any());
+    }
+
+    @Test
+    void addMultipleChoiceQuestion_examNotFound_shouldThrowNotFound() {
+        MultipleChoiceQuestionDto dto = new MultipleChoiceQuestionDto();
+        dto.setQuestionText("Some MCQ?");
+        dto.setOptions(Arrays.asList("A", "B", "C"));
+        dto.setCorrectOptionIndex(2);
+        dto.setExamId(1);
+
+        when(examRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                questionsService.addMultipleChoiceQuestion(dto)
+        );
+
+        assertEquals(404, exception.getStatusCode().value());
+        verify(questionRepository, never()).save(any());
     }
 }
