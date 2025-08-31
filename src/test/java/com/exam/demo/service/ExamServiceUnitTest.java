@@ -4,8 +4,8 @@ package com.exam.demo.service;
 import com.exam.demo.dto.ExamDto;
 import com.exam.demo.model.CourseInstance;
 import com.exam.demo.model.Exam;
-import com.exam.demo.repository.CourseInstanceRepository;
-import com.exam.demo.repository.ExamRepository;
+import com.exam.demo.repo.CourseInstanceRepository;
+import com.exam.demo.repo.ExamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,24 +40,28 @@ public class ExamServiceUnitTest {
     void setUp(){
         validExamDto = new ExamDto();
         validExamDto.setTitle("میانترم ریاضی عمومی");
-        validExamDto.setDescription("ازمون ترم پاییز");
-        validExamDto.setExamDate("1404/05/29");
+        validExamDto.setDescription("آزمون ترم پاییز");
         validExamDto.setPublishAt(LocalDateTime.now());
         validExamDto.setStartTime(LocalTime.of(9,0));
         validExamDto.setEndTime(LocalTime.of(11,0));
 
+        LocalDate future = LocalDate.now().plusDays(10);
+        String futureJalali = examService.convertLocalDateToJalali(future);
+        validExamDto.setExamDate(futureJalali);
+
         courseInstance = new CourseInstance();
         courseInstance.setId(1);
 
-        savedExam=new Exam();
+        savedExam = new Exam();
         savedExam.setId(1);
         savedExam.setTitle("میانترم ریاضی عمومی");
-        validExamDto.setDescription("ازمون ترم پاییز");
-        savedExam.setExamDate(LocalDate.of(2025, 8, 20));
+        savedExam.setDescription("آزمون ترم پاییز");
+        savedExam.setExamDate(future);
         savedExam.setStartTime(LocalTime.of(9,0));
         savedExam.setEndTime(LocalTime.of(11,0));
         savedExam.setCourseInstance(courseInstance);
     }
+
 
     @Test
     void parseJalaliToLocalDate_ValidInput_ReturnsCorrectDate(){
@@ -79,10 +83,11 @@ public class ExamServiceUnitTest {
         ExamDto result = examService.createExam(validExamDto,1);
 
         assertNotNull(result);
-        assertEquals("میانترم ریاضی عمومی",result.getTitle());
-        assertEquals("1404/05/29", result.getExamDate());
+        assertEquals("میانترم ریاضی عمومی", result.getTitle());
+        assertEquals(validExamDto.getExamDate(), result.getExamDate());
         verify(examRepository, times(1)).save(any(Exam.class));
     }
+
 
     @Test
     void createExam_PastDate_ThrowsException(){
@@ -106,28 +111,32 @@ public class ExamServiceUnitTest {
     void updateExamByTitle_ValidInput_ReturnsUpdatedExamDto(){
         ExamDto updateDto = new ExamDto();
         updateDto.setTitle("ریاضی آپدیت");
-        updateDto.setDescription("اپدیت");
-        updateDto.setExamDate("1404/05/22");
+        updateDto.setDescription("آپدیت");
+
+        LocalDate newFuture = LocalDate.now().plusDays(15);
+        String newFutureJalali = examService.convertLocalDateToJalali(newFuture);
+        updateDto.setExamDate(newFutureJalali);
         updateDto.setStartTime(LocalTime.of(10,0));
         updateDto.setEndTime(LocalTime.of(12,0));
 
-        Exam exitingExam = new Exam();
-        exitingExam.setId(1);
-        exitingExam.setTitle("ریاضی");
-        exitingExam.setDescription("توضیح اصلی");
-        exitingExam.setStartTime(LocalTime.of(9,0));
-        exitingExam.setExamDate(LocalDate.of(2025,8,13));
-        exitingExam.setCourseInstance(courseInstance);
+        Exam existingExam = new Exam();
+        existingExam.setId(1);
+        existingExam.setTitle("ریاضی");
+        existingExam.setDescription("توضیح اصلی");
+        existingExam.setStartTime(LocalTime.of(9,0));
+        existingExam.setExamDate(LocalDate.now().plusDays(10)); // هم خودش آینده باشد
+        existingExam.setCourseInstance(courseInstance);
 
-        when(examRepository.findById(1)).thenReturn(Optional.of(exitingExam));
-        when(examRepository.save(any(Exam.class))).thenReturn(exitingExam);
+        when(examRepository.findById(1)).thenReturn(Optional.of(existingExam));
+        when(examRepository.save(any(Exam.class))).thenReturn(existingExam);
 
         ExamDto result = examService.updateExamById(1, updateDto);
 
         assertEquals("ریاضی آپدیت", result.getTitle());
-        assertEquals("اپدیت", result.getDescription());
-        assertEquals("1404/05/22", result.getExamDate());
+        assertEquals("آپدیت", result.getDescription());
+        assertEquals(newFutureJalali, result.getExamDate());
     }
+
 
     @Test
     void deleteExamById_ExistingId_DeletesExam() {

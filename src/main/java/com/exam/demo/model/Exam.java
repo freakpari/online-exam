@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "exams")
 public class Exam {
@@ -59,9 +59,9 @@ public class Exam {
         updatedAt = LocalDateTime.now();
     }
 
-/*    @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    private List<Questions> questions;*/
+    private List<Questions> questions;
 
-
+    private boolean hasCustomScore;
 }
