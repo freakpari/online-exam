@@ -1,27 +1,36 @@
 package com.exam.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
 @Entity
+@Setter
+@Getter
 @Table(name = "course_instance")
 public class CourseInstance {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    private int courseId;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
-    private int teacherId;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     private LocalDateTime startDate;
-
     private LocalDateTime endDate;
-
-    @Column(length = 100)
     private String schedule;
+
+    @OneToMany(mappedBy = "courseInstance")
+    private Set<Enrollment> enrollments= new HashSet<>();
+
+
 }

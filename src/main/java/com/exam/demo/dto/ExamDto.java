@@ -20,6 +20,12 @@ public class ExamDto {
 
     private LocalTime endTime;
 
+    private String showExamDate;
+
+    private LocalTime showStartTime;
+
+    private LocalTime showEndTime;
+
     private LocalDateTime publishAt;
 
     @NotNull

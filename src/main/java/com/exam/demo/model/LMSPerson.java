@@ -26,4 +26,11 @@ public class LMSPerson {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Student student;
+
+
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Teacher teacher;
 }

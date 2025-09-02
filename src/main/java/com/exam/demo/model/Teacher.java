@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "teacher")
 @Getter
@@ -18,4 +21,8 @@ public class Teacher {
     @OneToOne
     @JoinColumn(name = "person_id")
     private LMSPerson person;
+
+    @OneToMany(mappedBy = "teacher")
+    private Set<CourseInstance> courseInstances = new HashSet<>();
+
 }
