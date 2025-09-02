@@ -8,15 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
 @Setter
 @Getter
 public class User {
-    public User() {}
 
-    public User(Integer id) {
-        this.id = id;
-    }
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -29,6 +24,13 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> roles = new HashSet<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private LMSPerson lmsPerson;
 
-    // getters and setters
+    public User() {
+
+    }
+    public User(Integer id) {
+        this.id = id;
+    }
 }

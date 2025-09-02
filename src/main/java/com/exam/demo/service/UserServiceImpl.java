@@ -1,40 +1,44 @@
-/*
 package com.exam.demo.service;
 
-import com.exam.demo.entity.User;
+import com.exam.demo.dto.RegisterDto;
+import com.exam.demo.dto.UserDto;
+import com.exam.demo.model.LMSPerson;
+import com.exam.demo.model.User;
+import com.exam.demo.repo.LmsPersonRepository;
 import com.exam.demo.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder){
-        this.userRepository=userRepository;
-        this.passwordEncoder=passwordEncoder;
+    private final UserRepository userRepository;
+    private final LmsPersonRepository lmsPersonRepository;
+    public UserServiceImpl(UserRepository userRepository, LmsPersonRepository lmsPersonRepository) {
+        this.userRepository = userRepository;
+        this.lmsPersonRepository = lmsPersonRepository;
     }
     @Override
-    public User registerUser(User user) {
+    public List<User> findAll(){
 
-        if(userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already taken");
-        }
+        return userRepository.findAll();
+    }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public void saveUser(RegisterDto user) {
+        User userEntity = new User();
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(user.getPassword());
+         User savedUser=userRepository.save(userEntity);
+
+        LMSPerson lmsPersonEntity = new LMSPerson();
+        lmsPersonEntity.setNameFamily(user.getNameFamily());
+        lmsPersonEntity.setPhone(user.getPhone());
+        lmsPersonEntity.setNationalCode(user.getNationalCode());
+        lmsPersonEntity.setUser(savedUser);
+        savedUser.setLmsPerson(lmsPersonEntity);
+        lmsPersonRepository.save(lmsPersonEntity);
     }
-    @Override
-    public PasswordEncoder passwordEncoder() {
-        return this.passwordEncoder;
-    }
+
 }
-*/

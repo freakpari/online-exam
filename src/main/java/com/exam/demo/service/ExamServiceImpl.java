@@ -9,6 +9,7 @@ import com.exam.demo.repo.ExamRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,4 +117,12 @@ public class ExamServiceImpl implements ExamService{
                 .orElseThrow(() -> new RuntimeException("Exam not found with title: " + title));
         return toDto(exam);
     }
+    public List<Exam> getAvailableExamsForStudent(Integer courseInstanceId) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        return examRepository.findByCourseInstance_IdAndExamDateEqualsAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                courseInstanceId, today, now, now
+        );
+    }
+
 }
