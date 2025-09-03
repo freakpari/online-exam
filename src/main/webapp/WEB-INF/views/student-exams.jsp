@@ -14,7 +14,8 @@
         <p>${exams.description}</p>
         <p>تاریخ: ${exams.examDate}</p>
         <p>ساعت: ${exams.startTime} تا ${exams.endTime}</p>
-        <a href="/exam/start/${exams.id}">شروع آزمون</a>
+        <a href="/student/exams/${examId}/questions">شروع آزمون</a>
+        <P>${examId}</P>
     </div>
 </c:forEach>
 

@@ -21,7 +21,7 @@ public class CourseInstanceService {
 
 
     public List<CourseInstance> getCoursesByStudent(Integer studentId) {
-        return repository.findByStudentId(studentId);
+        return repository.findByEnrollmentsStudentId(studentId);
     }
 
 }

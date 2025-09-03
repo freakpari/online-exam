@@ -8,16 +8,13 @@
     <ul>
         <li><a href="#">Manage Courses</a></li>
         <li><a href="/teacher/${teacherId}/students">View Students</a></li>
-        <P>${teacherId}</P>
     </ul>
 </c:if>
 
 <c:if test="${isStudent}">
     <h3>Student Menu</h3>
     <ul>
-        <li><a href="/student/${studentId}/courses">View Courses</a></li>
-        <p>StudentId: ${studentId}</p>
-
+        <li><a href="/courses/student/${studentId}">View Courses</a></li>
         <li><a href="#">Submit Assignment</a></li>
         <c:forEach var="course" items="${courses}">
             <li>
@@ -25,9 +22,6 @@
                     View Exams for ${course.courseName}
                 </a>
             </li>
-        </c:forEach>
-        <c:forEach var="course" items="${courses}">
-            <p>Loop working!</p>
         </c:forEach>
     </ul>
 </c:if>

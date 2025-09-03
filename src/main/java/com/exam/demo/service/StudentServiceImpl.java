@@ -14,7 +14,5 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Integer findStudentIdByUsername(String username) {
-        return studentRepository.findIdByUsername(username);
-    }
+
 }

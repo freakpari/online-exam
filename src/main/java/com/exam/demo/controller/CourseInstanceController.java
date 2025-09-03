@@ -36,20 +36,12 @@ public class CourseInstanceController {
     @GetMapping("/student/{studentId}")
     public String showStudentCourses(@PathVariable Integer studentId, ModelMap model) {
         List<CourseInstance> courses = service.getCoursesByStudent(studentId);
-        model.addAttribute("studentId", studentId);  // 👈 اینجا مقدار studentId میاد
         model.addAttribute("courses", courses);
+        System.out.println(courses);
         return "student-courses";
     }
-/*    @GetMapping("/profile")
-    public String dashboard(ModelMap model, Authentication authentication) {
-        String username = authentication.getName();
-        Student student = studentService.findStudentIdByUsername(username); // inject StudentService در کنترلر
-        model.addAttribute("studentId", student.getId());
-        model.addAttribute("isStudent", true);
-        model.addAttribute("isTeacher", false);
-        model.addAttribute("username", student.getPerson().getNameFamily());
-        return "profile";
-    }*/
+
+
 
 
 }

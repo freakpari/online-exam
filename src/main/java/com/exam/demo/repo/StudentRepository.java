@@ -11,13 +11,5 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student,Integer> {
     /*List<Student> findByPerson_NameContainingIgnoreCase(String  nameFamily);*/
  /*   List<Student> findStudentByEnrollments();*/
-    @Query("""
-        SELECT s.id 
-        FROM Student s 
-        JOIN s.person lp 
-        JOIN lp.user u 
-        WHERE u.username = :username
-    """)
-    Integer findIdByUsername(@Param("username") String username);
 
 }

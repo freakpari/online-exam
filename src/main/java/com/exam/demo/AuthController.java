@@ -65,23 +65,34 @@ public class AuthController {
         {
             model.addAttribute("teacherId", user.getLmsPerson().getTeacher().getId());
         }
-        if (isStudent && user.getLmsPerson() != null && user.getLmsPerson().getStudent() != null)
-        {
+        if (isStudent && user.getLmsPerson() != null && user.getLmsPerson().getStudent() != null) {
             Integer studentId = user.getLmsPerson().getStudent().getId();
             model.addAttribute("studentId", studentId);
             Set<Enrollment> enrollments = user.getLmsPerson().getStudent().getEnrollments();
-            if (!enrollments.isEmpty())
-            {
-                List<Map<String, Object>> courses = enrollments.stream().map(enrollment ->
-            {
-                Map<String, Object> map = new HashMap<>();
-                CourseInstance ci = enrollment.getCourseInstance();
-                map.put("courseInstanceId", ci.getId());
-                map.put("courseName", ci.getCourse().getCourseName());
-                return map;
-            }).toList();
-                 model.addAttribute("courses", courses);
-            } }
+
+            if (!enrollments.isEmpty()) {
+                List<Map<String, Object>> courses = enrollments.stream().map(enrollment -> {
+                    Map<String, Object> map = new HashMap<>();
+                    CourseInstance ci = enrollment.getCourseInstance();
+                    map.put("courseInstanceId", ci.getId());
+                    map.put("courseName", ci.getCourse().getCourseName());
+
+                    if (ci.getExams() != null && !ci.getExams().isEmpty()) {
+                        List<Map<String, Object>> exams = ci.getExams().stream().map(exam -> {
+                            Map<String, Object> examMap = new HashMap<>();
+                            examMap.put("examId", exam.getId());
+                            examMap.put("examTitle", exam.getTitle());
+                            return examMap;
+                        }).toList();
+                        map.put("exams", exams);
+                    }
+
+                    return map;
+                }).toList();
+                model.addAttribute("courses", courses);
+            }
+        }
+
         return "profile";
     }
 
