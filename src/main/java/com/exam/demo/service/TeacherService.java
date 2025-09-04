@@ -9,5 +9,5 @@ import java.util.Map;
 public interface TeacherService {
 
     Map<Integer, List<StudentEnrollmentDTO>> getStudentsGroupedByCourse(Integer teacherId);
-    List<StudentCoursesDTO> getCoursesByStudent(Integer studentId);
+
 }

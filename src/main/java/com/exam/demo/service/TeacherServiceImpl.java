@@ -26,9 +26,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
-    public List<StudentCoursesDTO> getCoursesByStudent(Integer studentId) {
-        return teacherRepository.findCoursesByStudentId(studentId);
-    }
 
 
 }

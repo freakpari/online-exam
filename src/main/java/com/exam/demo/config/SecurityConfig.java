@@ -23,29 +23,26 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-
-    // تعریف AuthenticationManager
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // تعریف SecurityFilterChain
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // غیرفعال کردن CSRF
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/WEB-INF/views/**","/register").permitAll() // مسیرهای آزاد
-                        .anyRequest().authenticated() // بقیه مسیرها نیازمند احراز هویت
+                        .requestMatchers("/login", "/WEB-INF/views/**","/register").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // صفحه لاگین سفارشی
-                        .defaultSuccessUrl("/my-profile", true) // مسیر بعد از ورود موفق
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/my-profile", true)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // مسیر بعد از خروج
+                        .logoutSuccessUrl("/login?logout")
                 );
 
         return http.build();
@@ -53,7 +50,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // No encoding, فقط برای تست و شرایط فعلی دیتابیس
+
         return new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {

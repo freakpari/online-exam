@@ -28,17 +28,7 @@ public class  TeacherController {
         model.addAttribute("groupedStudents", groupedStudents);
         return "teacher-students";
     }
-    @GetMapping("/student/{studentId}/courses")
-    public String showStudentCourses(@PathVariable Integer studentId, ModelMap model) {
-        // گرفتن دوره‌های دانشجو
-        List<StudentCoursesDTO> courses = teacherService.getCoursesByStudent(studentId);
 
-        // اضافه کردن studentId به مدل برای استفاده در JSP
-        model.addAttribute("studentId", studentId);
-        model.addAttribute("courses", courses);
-
-        return "student-courses";
-    }
 
 
 }

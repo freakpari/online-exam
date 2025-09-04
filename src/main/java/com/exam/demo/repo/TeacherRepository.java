@@ -35,26 +35,6 @@ import java.util.List;
         ORDER BY ci.id, p_s.nameFamily
     """)
         List<StudentEnrollmentDTO> findStudentsByTeacherId(Integer teacherId);
-        @Query("""
-    SELECT new com.exam.demo.dto.StudentCoursesDTO(
-        s.id,
-        p_s.nameFamily,
-        c.courseName,
-        p_t.nameFamily,
-        ci.schedule,
-        e.enrollmentDate
-    )
-    FROM Student s
-    JOIN s.person p_s
-    JOIN s.enrollments e
-    JOIN e.courseInstance ci
-    JOIN ci.course c
-    JOIN ci.teacher t
-    JOIN t.person p_t
-    WHERE s.id = :studentId
-    ORDER BY e.enrollmentDate DESC
-""")
-        List<StudentCoursesDTO> findCoursesByStudentId(Integer studentId);
 
     }
 

@@ -8,13 +8,13 @@
     <p>در حال حاضر آزمونی فعال نیست.</p>
 </c:if>
 
-<c:forEach var="exams" items="${exams}">
+<c:forEach var="exam" items="${exams}">
     <div style="border:1px solid black; padding:10px; margin:5px;">
-        <h3>${exams.title}</h3>
-        <p>${exams.description}</p>
-        <p>تاریخ: ${exams.examDate}</p>
-        <p>ساعت: ${exams.startTime} تا ${exams.endTime}</p>
-        <a href="/exam/start/${exams.id}">شروع آزمون</a>
+        <h3>${exam.title}</h3>
+        <p>${exam.description}</p>
+        <p>تاریخ: ${exam.examDate}</p>
+        <p>ساعت: ${exam.startTime} تا ${exam.endTime}</p>
+        <a href="/student/exams/${exam.id}/questions">شروع آزمون</a>
     </div>
 </c:forEach>
 
