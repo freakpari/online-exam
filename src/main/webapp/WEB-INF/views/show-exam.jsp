@@ -11,34 +11,41 @@
     <p>هیچ سوالی برای این آزمون یافت نشد.</p>
 </c:if>
 
-<c:forEach var="q" items="${questions}">
-    <div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
-        <p><strong>سوال:</strong> ${q.questionText}</p>
 
-        <c:choose>
+<form action="submitAnswers" method="post">
 
-            <c:when test="${q.type eq 'multipleChoice'}">
-                <ul>
-                    <c:forEach var="option" items="${q.options}" varStatus="loop">
-                        <li>
-                            <c:if test="${loop.index + 1 == q.correctOptionIndex}">
-                                <b>${loop.index + 1}. ${option} ✅</b>
-                            </c:if>
-                            <c:if test="${loop.index + 1 != q.correctOptionIndex}">
-                                ${loop.index + 1}. ${option}
-                            </c:if>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </c:when>
+    <c:forEach var="q" items="${questions}" varStatus="qStatus">
+        <div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
+            <p><strong>سوال ${qStatus.index + 1}:</strong> ${q.questionText}</p>
+
+            <c:choose>
+
+                <c:when test="${q.type eq 'multipleChoice'}">
+                    <ul>
+                        <c:forEach var="option" items="${q.options}" varStatus="loop">
+                            <li>
+
+                                <input type="radio"
+                                       <%--name="answer_${q.id}"--%>
+                                       value="${loop.index + 1}" />
+                                    ${loop.index + 1}. ${option}
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:when>
 
 
-            <c:when test="${q.type eq 'descriptive'}">
-                <p><i>این سوال تشریحی است.</i></p>
-            </c:when>
-        </c:choose>
-    </div>
-</c:forEach>
+                <c:when test="${q.type eq 'descriptive'}">
+                    <textarea <%--name="answer_${q.id}"--%> rows="3" cols="50"
+                              placeholder="پاسخ خود را بنویسید..."></textarea>
+                </c:when>
+            </c:choose>
+        </div>
+    </c:forEach>
+
+
+    <button type="submit">ارسال پاسخ‌ها</button>
+</form>
 
 </body>
 </html>

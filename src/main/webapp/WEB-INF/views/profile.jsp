@@ -8,6 +8,7 @@
     <ul>
         <li><a href="#">Manage Courses</a></li>
         <li><a href="/teacher/${teacherId}/students">View Students</a></li>
+        <li><a href="#"></a></li>
     </ul>
 </c:if>
 
